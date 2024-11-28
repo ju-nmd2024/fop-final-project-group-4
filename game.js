@@ -3,31 +3,24 @@
 let img;
 let alien;
 
+
 // Character variables
 /*let x = 100;
 let y = 100;*/
 let alienX = 100;
 let alienY = 100;
 
-// Platform variables
+// Blue platform blockers
 let platForm1X = 200;
 let platForm1Y = 540;
 
-// Gravity -
+// Gravity 
 let jump = false;
-let direction = 1;
 let alienVelocity = 0;
-let power = 10;
-let falling = 2;
-let heightMin = 540;
-
-//2- Preload the image (replace the name and path with your own)
-// preload() runs once before setup
 
 // game logic
 let velocityY = 0.2;
 let accelaration = 0.2;
-
 // Game state
 let gameState = "start";
 function preload() {
@@ -92,38 +85,23 @@ function draw() {
 gamescreen();
 winScreen();
 loseScreen();*/
-clear();
-  image(img, width / 2, height / 2, width, height); // Background
-  image(alien, alienX, alienY + 440, 70, 70); // Character alien
-platform();
-// blue platforms 
 
+image(img, width / 2, height / 2, width, height); // Background
+image(alien, alienX, alienY + 440, 70, 70); // Character alien
 
-  // gravity
-  /*alienY =alienY + velocityY;
-velocityY = velocityY + accelaration;
-
-*/
-  /*function gravity() {
-    alienY = alienY + driection * velocity;
-
-    if (alienY >= minHeight) {
-      // Stop falling
-      alienY = alienY;
-    } else {
-      alienY = alienY + direction * velocity; // falling
-    }
-
-    if (jump === true) {
-    }
-  }
-*/
+platform(); // blue platforms 
   // Handle keyboard input for movement
   if (keyIsDown(RIGHT_ARROW)) {
+    push();
     alienX += 3;
-  }
-  if (keyIsDown(LEFT_ARROW)) {
+    scale(-1,1);
+    image(alien, -alienX, alienY + 440, 70, 70);
+    pop();
+    
+  } 
+if (keyIsDown(LEFT_ARROW)) {
     alienX -= 3;
+    image(alien, alienX, alienY + 440, 70, 70);
   }
   if (keyIsDown(UP_ARROW)) {
     alienY -= 5; // Move upwards by reducing velocity
@@ -133,7 +111,7 @@ velocityY = velocityY + accelaration;
   } else {
     jump = false;
   }
-
+// tutorial: P5Js jump animation (bradlee crockett)
   // Alien velocityY
   alienY -= alienVelocity;
 
@@ -147,7 +125,6 @@ velocityY = velocityY + accelaration;
 
   }
   
- 
   // Prevent alien from falling off the canvas
   if (alienY > height) {
     gameState = "lose"; // Switch to lose screen
