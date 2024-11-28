@@ -16,7 +16,7 @@ let platForm1Y = 540;
 // Gravity -
 let jump = false;
 let direction = 1;
-let velocity = 2;
+let alienVelocity = 0;
 let power = 10;
 let falling = 2;
 let heightMin = 540;
@@ -32,7 +32,7 @@ let accelaration = 0.2;
 let gameState = "start";
 function preload() {
   alien = loadImage("alien.png");
-  img = loadImage("game1.png");
+  img = loadImage("game.png");
 }
 
 function setup() {
@@ -77,20 +77,34 @@ function loseScreen() {
   pop();
 }
 
+function platform(){
+fill(4,4,153);
+noStroke();
+rect(0,140,605,40); // box längst upp
+rect(207,279,675,40); // box mitten
+rect(0,420,599,40); // box botten
+rect(760,456,125,40); // sido box1
+rect(760,176,125,40); //sido box2
+}
+ 
 function draw() {
   /* startScreen();
 gamescreen();
 winScreen();
 loseScreen();*/
-  image(img, width / 2, height / 2, width, height);
-  image(alien, alienX, alienY + 440, 70, 70);
+clear();
+  image(img, width / 2, height / 2, width, height); // Background
+  image(alien, alienX, alienY + 440, 70, 70); // Character alien
+platform();
+// blue platforms 
+
 
   // gravity
   /*alienY =alienY + velocityY;
 velocityY = velocityY + accelaration;
 
 */
-  function gravity() {
+  /*function gravity() {
     alienY = alienY + driection * velocity;
 
     if (alienY >= minHeight) {
@@ -103,7 +117,7 @@ velocityY = velocityY + accelaration;
     if (jump === true) {
     }
   }
-
+*/
   // Handle keyboard input for movement
   if (keyIsDown(RIGHT_ARROW)) {
     alienX += 3;
@@ -114,9 +128,13 @@ velocityY = velocityY + accelaration;
   if (keyIsDown(UP_ARROW)) {
     alienY -= 5; // Move upwards by reducing velocity
     jump = true;
+    alienYVelocity
   } else {
     jump = false;
   }
+
+  // Alien velocityY
+  alienY += alienYVelocity
 
   // Prevent alien from falling off the canvas
   if (alienY > height) {
