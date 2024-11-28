@@ -128,16 +128,29 @@ velocityY = velocityY + accelaration;
   if (keyIsDown(UP_ARROW)) {
     alienY -= 5; // Move upwards by reducing velocity
     jump = true;
-    alienYVelocity
+    alienVelocity = 5;
+    //if (alienY <= 100);
   } else {
     jump = false;
   }
 
   // Alien velocityY
-  alienY += alienYVelocity
+  alienY -= alienVelocity;
 
+  if (alienY < 100){
+    alienVelocity -= 2;
+  }
+
+  if (alienY >= 100){
+    alienVelocity = 0;
+    alienY = 100;
+
+  }
+  
+ 
   // Prevent alien from falling off the canvas
   if (alienY > height) {
     gameState = "lose"; // Switch to lose screen
   }
 }
+ 
