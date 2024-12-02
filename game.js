@@ -1,6 +1,7 @@
 /* CODE IS FROM P5JS WEBSITE*/
 //1- Declare variable for your image
 let img;
+let start;
 //let alien;
 let dunk;
 let tool;
@@ -30,8 +31,9 @@ function preload() {
   alien = loadImage("alien.png");
   img = loadImage("game.png");
   dunk = loadImage("dunk.png");
-  tool = loadImage("tool.png"); 
+  tool = loadImage("tool.png");
   wheel = loadImage("wheel.png");
+  start = loadImage("screen.png");
 }
 
 function setup() {
@@ -41,7 +43,7 @@ function setup() {
 
 function startScreen() {
   push();
-  background(245, 132, 66);
+  image(start, width / 2, height / 2, width, height);
   fill(255, 255, 190);
   textSize(40);
   textAlign(CENTER);
@@ -59,7 +61,7 @@ function gamestate() {
 
 function winScreen() {
   push();
-  background(57, 166, 45);
+  image(start, width / 2, height / 2, width, height);
   textSize(40);
   textAlign(CENTER);
   text("WELL DONE!", 330, 300);
@@ -68,7 +70,7 @@ function winScreen() {
 }
 function loseScreen() {
   push();
-  background(255, 0, 0);
+  image(start, width / 2, height / 2, width, height);
   textSize(40);
   textAlign(CENTER);
   text("GAME OVER", 330, 300);
@@ -86,17 +88,17 @@ function loseScreen() {
   rect(760, 176, 125, 40); //sido box2
 }*/
 function draw() {
-  /* startScreen();
-gamescreen();
-winScreen();
-loseScreen();*/
-
+  startScreen();
+  gamestate();
+  winScreen();
+  loseScreen();
   image(img, width / 2, height / 2, width, height); // Background
   //image(alien, alienX, alienY + 440, 70, 70); // Character alien
- // platform(); // blue platforms
+  // platform(); // blue platforms
   image(dunk, 820, 400, 60, 60);
   image(wheel, 490, 250, 40, 40);
   image(tool, 280, 100, 70, 40);
+  image(start, width / 2, height / 2, width, height);
 
   // Handle keyboard input for movement
   if (keyIsDown(RIGHT_ARROW)) {
@@ -138,15 +140,10 @@ loseScreen();*/
   }
 }
 
-function collisions(){
+function collisions() {
   soil = false;
 
-
-
-
-
-
-   /* mouseX > buttonX &&
+  /* mouseX > buttonX &&
     mouseX < buttonX + rectWidth &&
     mouseY > buttonY &&
     mouseY < buttonY + rectHeight
