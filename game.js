@@ -1,7 +1,7 @@
 /* CODE IS FROM P5JS WEBSITE*/
 //1- Declare variable for your image
 let img;
-let alien;
+//let alien;
 let dunk;
 let tool;
 let faceDirection = 1;
@@ -11,10 +11,11 @@ let faceDirection = 1;
 let y = 100;*/
 let alienX = 100;
 let alienY = 100;
+let soil = false;
 
-// Blue platform blockers
+/* Blue platform blockers
 let platForm1X = 200;
-let platForm1Y = 540;
+let platForm1Y = 540;*/
 
 // Gravity
 let jump = false;
@@ -29,7 +30,7 @@ function preload() {
   alien = loadImage("alien.png");
   img = loadImage("game.png");
   dunk = loadImage("dunk.png");
-  tool = loadImage("tool.png");
+  tool = loadImage("tool.png"); 
   wheel = loadImage("wheel.png");
 }
 
@@ -75,7 +76,7 @@ function loseScreen() {
   pop();
 }
 
-function platform() {
+/*function platform() {
   fill(4, 4, 153);
   noStroke();
   rect(0, 140, 605, 40); // box längst upp
@@ -83,8 +84,7 @@ function platform() {
   rect(0, 420, 599, 40); // box botten
   rect(760, 456, 125, 40); // sido box1
   rect(760, 176, 125, 40); //sido box2
-}
-
+}*/
 function draw() {
   /* startScreen();
 gamescreen();
@@ -93,7 +93,7 @@ loseScreen();*/
 
   image(img, width / 2, height / 2, width, height); // Background
   //image(alien, alienX, alienY + 440, 70, 70); // Character alien
-  platform(); // blue platforms
+ // platform(); // blue platforms
   image(dunk, 820, 400, 60, 60);
   image(wheel, 490, 250, 40, 40);
   image(tool, 280, 100, 70, 40);
@@ -120,7 +120,6 @@ loseScreen();*/
   } else {
     jump = false;
   }
-  // tutorial: P5Js jump animation (bradlee crockett)
   // Alien velocityY
   alienY -= alienVelocity;
 
@@ -137,4 +136,20 @@ loseScreen();*/
   if (alienY > height) {
     gameState = "lose"; // Switch to lose screen
   }
+}
+
+function collisions(){
+  soil = false;
+
+
+
+
+
+
+   /* mouseX > buttonX &&
+    mouseX < buttonX + rectWidth &&
+    mouseY > buttonY &&
+    mouseY < buttonY + rectHeight
+
+*/
 }
