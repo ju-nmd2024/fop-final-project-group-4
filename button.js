@@ -1,4 +1,4 @@
-class Button{
+ class Button{
     constructor(x, y, width, height, text){
         this.x = x;
         this.y = y;
@@ -39,7 +39,7 @@ function mousePressed(){
 
     if(mouseX > 100 && mouseX < 100 + 200 && mouseY > 100)
         buttonIsClicked = true;
-    console.log = "play";
+    console.log ('play');
 
 
 } 

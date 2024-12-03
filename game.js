@@ -1,22 +1,22 @@
+
+let blaPlatform = [];
 /* CODE IS FROM P5JS WEBSITE*/
 //1- Declare variable for your image
 let img;
 let start;
-//let alien;
+
+// Game elements
+let elevator;
+let lava;
 let dunk;
 let tool;
+// character
 let faceDirection = 1;
 
 // Character variables
-/*let x = 100;
-let y = 100;*/
 let alienX = 100;
 let alienY = 100;
 let soil = false;
-
-/* Blue platform blockers
-let platForm1X = 200;
-let platForm1Y = 540;*/
 
 // Gravity
 let jump = false;
@@ -25,8 +25,11 @@ let alienVelocity = 0;
 // game logic
 let velocityY = 0.2;
 let accelaration = 0.2;
+
 // Game state
-let gameState = "start";
+let gameState = "Play";
+
+
 function preload() {
   alien = loadImage("alien.png");
   img = loadImage("game.png");
@@ -34,12 +37,20 @@ function preload() {
   tool = loadImage("tool.png");
   wheel = loadImage("wheel.png");
   start = loadImage("screen.png");
+  elevator = loadImage("elevator.png");
+  lava = loadImage("lava.png");
 }
 
 function setup() {
-  createCanvas(900, 600);
+  createCanvas(900, 680);
   imageMode(CENTER);
+  for (let i=0;i<1;i++)
+  {
+    blaPlatform[i] = new Platform(100,100);
+  }
+  
 }
+
 
 function startScreen() {
   push();
@@ -49,14 +60,27 @@ function startScreen() {
   textAlign(CENTER);
   text("START GAME", 440, 300);
   text("Click or press enter to play", 440, 450);
+
   pop();
 }
 
-function gamestate() {
+function gameScreen() {
+  
   background(135, 206, 235);
   image(img, width / 2, height / 2, width, height);
-  image(alien, alienX, alienY, 70, 70);
-  // elements
+ 
+  image(elevator, 145, 320, 225, 30);
+  image(dunk, 820, 400, 60, 60);
+  image(wheel, 490, 250, 40, 40);
+  image(tool, 280, 100, 70, 40);
+
+// Platform in an array
+  for (let i=0;i<1;i++)
+    {
+      blaPlatform[i].draw();
+    }
+    image(alien, alienX, alienY + 500, 70, 70);
+    
 }
 
 function winScreen() {
@@ -68,6 +92,7 @@ function winScreen() {
   text("click on the screen to restart", 350, 400);
   pop();
 }
+
 function loseScreen() {
   push();
   image(start, width / 2, height / 2, width, height);
@@ -78,29 +103,8 @@ function loseScreen() {
   pop();
 }
 
-/*function platform() {
-  fill(4, 4, 153);
-  noStroke();
-  rect(0, 140, 605, 40); // box längst upp
-  rect(207, 279, 675, 40); // box mitten
-  rect(0, 420, 599, 40); // box botten
-  rect(760, 456, 125, 40); // sido box1
-  rect(760, 176, 125, 40); //sido box2
-}*/
 function draw() {
-  startScreen();
-  gamestate();
-  winScreen();
-  loseScreen();
-  image(img, width / 2, height / 2, width, height); // Background
-  //image(alien, alienX, alienY + 440, 70, 70); // Character alien
-  // platform(); // blue platforms
-  image(dunk, 820, 400, 60, 60);
-  image(wheel, 490, 250, 40, 40);
-  image(tool, 280, 100, 70, 40);
-  image(start, width / 2, height / 2, width, height);
-
-  // Handle keyboard input for movement
+  //Handle keyboard input for movement
   if (keyIsDown(RIGHT_ARROW)) {
     faceDirection = 1;
     alienX += 3;
@@ -112,13 +116,12 @@ function draw() {
   push();
   translate(alienX, alienY + 440);
   scale(faceDirection, 1);
-  image(alien, 0, 0, 70, 70);
+ image(alien, 0, 0, 70, 70); //lägg in denna i gamestate
   pop();
   if (keyIsDown(UP_ARROW)) {
-    alienY -= 5; // Move upwards by reducing velocity
+    alienY -= 3; // Move upwards by reducing velocity
     jump = true;
     alienVelocity = 5;
-    //if (alienY <= 100);
   } else {
     jump = false;
   }
@@ -133,20 +136,65 @@ function draw() {
     alienVelocity = 0;
     alienY = 100;
   }
-
-  // Prevent alien from falling off the canvas
-  if (alienY > height) {
-    gameState = "lose"; // Switch to lose screen
+  if (gameState === "Start"){
+    startScreen();
+  } else if(gameState === "Play"){
+    gameScreen();
+  } else if(gameState === "win"){
+    winScreen();
+  } else if (gameState === "lose"){
+    loseScreen();
   }
 }
+/*
+function mousePressed(){
+  if(mouseX > 100 && mouseX < 100 + 200 && mouseY > 100)
+    buttonIsClicked = true;
+     console.log ('play');
+    
+    { 
+     if(gameState === "start"){
+        state = "game"; 
+        startScreen();
+        gameState = true;
+      } else if (state === "win" || state === "lose"){
+        state = "game";
+        resetGame();
+      }
 
+
+    } 
+    
+
+}
+*/
 function collisions() {
   soil = false;
+}
 
-  /* mouseX > buttonX &&
-    mouseX < buttonX + rectWidth &&
-    mouseY > buttonY &&
-    mouseY < buttonY + rectHeight
+class Platform {
+  constructor(x, y){
+      this.x = x;
+      this.y = y;
+      
+  }
 
-*/
+  draw(){
+      // platforms
+      fill(4, 4, 153);
+      noStroke();
+      rect(this.x - 100, this.y + 40, this.x + 505, this.y -60); // box top
+      rect(this.x + 157, this.y + 200, this.x + 535, this.y - 60); // box middle
+      rect(this.x - 100, this.y + 360, this.x + 499, this.y - 60); // box bottom
+      rect(this.x + 660, this.y + 400, this.x + 25, this.y -60); // side box1
+      rect(this.x + 660, this.y + 76, this.x + 25, this.y -  60); //side box2
+
+
+      // walls 
+      rect(this.x - 110, this.y + 530, this.x + 800, this.y - 50); // bottom 
+      rect(this.x - 110, this.y -100, this.x + 800, this.y - 80); // top 
+      rect(this.x - 100, this.y - 100, this.x - 70, this.y + 550); // left wall
+      rect(this.x + 780 , this.y - 100, this.x - 60, this.y + 580); // right wall
+
+  }
 }
