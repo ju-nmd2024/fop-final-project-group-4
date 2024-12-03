@@ -34,10 +34,19 @@ function preload() {
 function setup() {
   createCanvas(900, 680);
   imageMode(CENTER);
-  for (let i=0;i<1;i++)
-  {
-    blaPlatform[i] = new Platform(100,100);
-  }
+ 
+ // create platforms 
+ platforms.push(new Platform(0, 140, 605, 40));   // Top platform
+ platforms.push(new Platform(207, 279, 675, 40)); // middle platform
+ platforms.push(new Platform(0, 420, 599, 40));   // bottom platform
+ platforms.push(new Platform(760, 456, 125, 40)); // side platform 1
+ platforms.push(new Platform(760, 176, 125, 40)); // side platform 2
+ platforms.push(new Platform(0, 600, 900, 40));   // ground platform 
+ platforms.push(new Platform(0, 0, 30, 640));     // left wall 
+ platforms.push(new Platform(870, 9, 50, 640));   // right wall 
+ platforms.push(new Platform(0, 0, 900, 20));     // roof 
+ 
+
   
 }
 
@@ -56,16 +65,17 @@ function startScreen() {
 
 function gameScreen() {
   image(img, width / 2, height / 2, width, height);
-  image(elevator, 145, 320, 225, 30);
+  // draw platforms
+  for (let platform of platforms){
+    platform.draw();
+  }
+
+  /*image(elevator, 145, 320, 225, 30);
   image(dunk, 820, 400, 60, 60);
   image(wheel, 490, 250, 40, 40);
-  image(tool, 280, 100, 70, 40);
+  image(tool, 280, 100, 70, 40);*/
+  
 
-// Platform in an array
-  for (let i=0;i<1;i++)
-    {
-      blaPlatform[i].draw();
-    }
     image(alien, alienX, alienY + 500, 70, 70);
     
 }
@@ -138,10 +148,13 @@ function collisions() {
   soil = false;
 }
 
+// Blue platforms class
 class Platform {
-  constructor(x, y){
+  constructor(x, y, w, h){
       this.x = x;
       this.y = y;
+      this.w = w;
+      this.h = h;
       
   }
 
@@ -149,18 +162,7 @@ class Platform {
       // platforms
       fill(4, 4, 153);
       noStroke();
-      rect(this.x - 100, this.y + 40, this.x + 505, this.y -60); // box top
-      rect(this.x + 157, this.y + 200, this.x + 535, this.y - 60); // box middle
-      rect(this.x - 100, this.y + 360, this.x + 499, this.y - 60); // box bottom
-      rect(this.x + 660, this.y + 400, this.x + 25, this.y -60); // side box1
-      rect(this.x + 660, this.y + 76, this.x + 25, this.y -  60); //side box2
-
-
-      // walls 
-      rect(this.x - 110, this.y + 530, this.x + 800, this.y - 50); // bottom 
-      rect(this.x - 110, this.y -100, this.x + 800, this.y - 80); // top 
-      rect(this.x - 100, this.y - 100, this.x - 70, this.y + 550); // left wall
-      rect(this.x + 780 , this.y - 100, this.x - 60, this.y + 580); // right wall
+      rect(this.x, this.y, this.w, this.h);
 
   }
 }
