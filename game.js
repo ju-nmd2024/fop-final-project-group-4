@@ -1,33 +1,23 @@
+// variables for images
+let alien, img, dunk, tool, wheel, start;
 
-let blaPlatform = [];
-/* CODE IS FROM P5JS WEBSITE*/
-//1- Declare variable for your image
-let img;
-let start;
+// game elements
+let platforms = []; // array for platforms
+let collectibles = []; // array for collectibles
 
-// Game elements
-let elevator;
-let lava;
-let dunk;
-let tool;
 // character
 let faceDirection = 1;
-
-// Character variables
 let alienX = 100;
-let alienY = 100;
-let soil = false;
+let alienY = 600;
+let alienVelocity = 0;
+let onGround = false;
 
 // Gravity
-let jump = false;
-let alienVelocity = 0;
-
-// game logic
-let velocityY = 0.2;
-let accelaration = 0.2;
+let gravity= 0.5;
+let jumpStrength = 15;
 
 // Game state
-let gameState = "Play";
+let gameState = "start";
 
 
 function preload() {
@@ -65,10 +55,7 @@ function startScreen() {
 }
 
 function gameScreen() {
-  
-  background(135, 206, 235);
   image(img, width / 2, height / 2, width, height);
- 
   image(elevator, 145, 320, 225, 30);
   image(dunk, 820, 400, 60, 60);
   image(wheel, 490, 250, 40, 40);
@@ -146,28 +133,7 @@ function draw() {
     loseScreen();
   }
 }
-/*
-function mousePressed(){
-  if(mouseX > 100 && mouseX < 100 + 200 && mouseY > 100)
-    buttonIsClicked = true;
-     console.log ('play');
-    
-    { 
-     if(gameState === "start"){
-        state = "game"; 
-        startScreen();
-        gameState = true;
-      } else if (state === "win" || state === "lose"){
-        state = "game";
-        resetGame();
-      }
 
-
-    } 
-    
-
-}
-*/
 function collisions() {
   soil = false;
 }
