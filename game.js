@@ -33,28 +33,29 @@ function preload() {
   astro = loadImage ("astro.png");
 }
 
-function setup() {
-  createCanvas(900, 640);
-  imageMode(CENTER);
-  
-lavaObjects.push(new Lava(700 , 283, lava, 90, 20));
-lavaObjects.push(new Lava(260, 600, lava, 70, 20));
- // create platforms 
- platforms.push(new platform(0, 140, 605, 40));   // Top platform
- platforms.push(new platform(207, 279, 675, 40)); // middle platform
- platforms.push(new platform(0, 420, 599, 40));   // bottom platform
- platforms.push(new platform(760, 456, 125, 40)); // side platform 1
- platforms.push(new platform(760, 176, 125, 40)); // side platform 2
- platforms.push(new platform(0, 600, 900, 40));   // ground platform 
- platforms.push(new platform(0, 0, 30, 640));     // left wall 
- platforms.push(new platform(870, 9, 50, 640));   // right wall 
- platforms.push(new platform(0, 0, 900, 20));     // roof 
-// add collectibles
-collectibles.push(new Collectible(820,400,dunk,60,60));
-collectibles.push(new Collectible(280,100,tool,70,40));
-collectibles.push(new Collectible(490,250,wheel,40,40));
-}
+function setup() {  
 
+  createCanvas(900, 640); 
+  imageMode(CENTER);    
+
+  lavaObjects.push(new Lava(700 , 283, lava, 90, 20));
+  lavaObjects.push(new Lava(260, 600, lava, 70, 20));
+  // Create platforms
+  platforms.push(new Platform(0, 130, 605, 20)); // Top platform
+  platforms.push(new Platform(207, 283, 675, 20)); // Middle platform
+  platforms.push(new Platform(0, 420, 599, 20)); // Bottom platform
+  platforms.push(new Platform(760, 456, 125, 20)); // Side platform 1
+  platforms.push(new Platform(760, 176, 125, 20)); // Side platform 2
+  platforms.push(new Platform(0, 600, 900, 40)); // Ground platform
+  platforms.push(new Platform(0,0,30,640)); // testar vänster vägg
+  platforms.push(new Platform (870,9,50,640)); // testar höger vägg
+  platforms.push(new Platform(0,0,900,20)); // testar topp vägg
+  // Add collectibles
+  collectibles.push(new Collectible(820, 400, dunk, 60, 60));
+  collectibles.push(new Collectible(280, 100, tool, 70, 40));
+  collectibles.push(new Collectible(490, 250, wheel, 40, 40));
+ 
+} 
 
 function startScreen() {
   image(start, width / 2, height / 2, width, height);
@@ -76,8 +77,7 @@ function gameScreen() {
     textSize(30);
     textAlign(RIGHT);
     text("Time left: " + timer + "s", 570, 48);
-
-  for (let platform of platforms){
+ for (let platform of platforms){
     platform.draw();
   }
   // draw collectibles
@@ -86,9 +86,7 @@ function gameScreen() {
   }
   for (let lavas of lavaObjects) {
     lavas.draw();
-
   }
-
    // Handle alien movement
    handlePlayerMovement();
 
@@ -110,7 +108,8 @@ function gameScreen() {
 
 
 
-function winScreen() {
+
+ function winScreen() {
   image(start, width / 2, height / 2, width, height);
   textSize(40);
   textAlign(CENTER);
@@ -125,7 +124,7 @@ function loseScreen() {
   text("GAME OVER", 450, 300);
   text("click on the screen to restart", 450, 400);
 }
-
+// class for lava
 class Lava {
   constructor(x, y, img, width , height) { 
     this.x = x; 
@@ -136,12 +135,32 @@ class Lava {
   }
   draw() { 
     image(this.img, this.x, this.y, this.width, this.height);
-    noFill();
-  stroke(255, 0, 0); // red to see the lava pic
+
   }
+  aliencollision(alienX, alienY) {
+    let alienLeft = alienX - 25; 
+    let alienRight = alienX + 25;
+    let alienTop = alienY - 25;
+    let alienBottom = alienY + 25;
 
+    // lava image boundaries
+    let lavaLeft = this.x - this.width / 2;
+    let lavaRight = this.x + this.width / 2;
+    let lavaTop = this.y - this.height / 2;
+    let lavaBottom = this.y + this.height / 2;
+    // kolla om alien är i närheten av lavan
+
+    if ( 
+      alienRight > lavaLeft &&
+      alienLeft < lavaRight && 
+      alienBottom > lavaTop &&
+      alienTop < lavaBottom
+    ) {
+      return true; // att alien rör lavan
+    }
+    return false;
+  }
 }
-
 
 function draw() { 
   if (gameState === "start"){
@@ -155,15 +174,15 @@ function draw() {
   } 
 }
 
-function collisions() {
+function checkCollisions() {
   onGround= false;
   // collision with platforms
-  for(let platform of platforms){
+  for (let platform of platforms) {
     if (
-  alienY + 35 >= platform.y && // bottom hits top of platform
-  alienY + 35 <= platform.y + platform.h && // inside the platform height
-  alienX + 35 > platform.x && // right side within platform
-  alienX - 35 < platform.x + platform.w // left side within platform
+    alienY + 35 >= platform.y && // bottom hits top of platform
+    alienY + 35 <= platform.y + platform.h && // inside the platform height
+    alienX + 35 > platform.x && // right side within platform
+    alienX - 35 < platform.x + platform.w // left side within platform
   ) {
     alienY = platform.y - 35;
     alienVelocity= 0;
@@ -171,21 +190,29 @@ function collisions() {
   }
   // huvudet slår mot 
   if (
-    alienY - 35 <= platform.y + platform.h &&
-    alienY - 35 >= platform.y &&
-    alienX + 35 > platform.x &&
-    alienX - 35 < platform.x + platform.w 
+    alienY - 35 <= platform.y + platform.h && // toppen slår botten av platformen
+    alienY - 35 >= platform.y && // inutti platformens höjd
+    alienX + 35 > platform.x && // höger sida av platformen
+    alienX - 35 < platform.x + platform.w // vänster sida av platformen
   ){
-    alienY= platform.y + platform.h +35;
+    alienY= platform.y + platform.h + 35; // align below platform
     alienVelocity= 0; // stop upward movement
   }
-} for (let item of collectibles){
-  item.checkCollision(alienX,alienY);
-}   
+  for (let lava of lavaObjects) {
+    if (lava.aliencollision(alienX, alienY)) {
+      gameState = "lose"; // Game over if touching lava
+      return;
+      }
+    }
+  }
+
+  for (let item of collectibles) {
+    item.checkCollision(alienX, alienY);
+  }
 }
 
 // Blue platforms class
-class platform {
+class Platform {
   constructor(x, y, w, h){
       this.x = x;
       this.y = y;
@@ -232,15 +259,15 @@ class Collectible{
   }
 }
 
-function alienMovement(){
+function handlePlayerMovement(){
   // side movement 
   if(keyIsDown(RIGHT_ARROW)){
     faceDirection = 1;
-    alienX += 3;
+    alienX += 6;
   }
   if(keyIsDown(LEFT_ARROW)){
     faceDirection = -1;
-    alienX -= 3;
+    alienX -= 6;
   }
    // jump
    if(keyIsDown(UP_ARROW)&& onGround){
@@ -251,13 +278,13 @@ function alienMovement(){
    // gravity 
    alienVelocity += gravity;
    alienY += alienVelocity;
-   alienX = constrain(alienX, 0, width - 70);
+   alienX = constrain(alienX, 70, width - 50 - 25);
 }
 function drawAlien(){
   push();
   translate(alienX, alienY);
-  scale(faceDirection, 1);
-  image(alien,0, 0 ,70, 70);
+  scale(faceDirection, 1.4);
+  image(alien,0, 0 ,50, 50);
   pop();
   
 }
