@@ -60,12 +60,12 @@ function setup() {
 function startScreen() {
   image(start, width / 2, height / 2, width, height);
   fill(255, 255, 190);
-  textSize(50);
+  textSize(60);
   textAlign(CENTER);
   textStyle(BOLD);
   text("START GAME", width / 2, height / 2);
   textSize(20);
-  text("Press enter to play", 440, 370);
+  text("Press ENTER to play", width/2, 370);
   
 }
 
@@ -78,7 +78,7 @@ function gameScreen() {
     fill(255);
     textSize(30);
     textAlign(RIGHT);
-    text("Time left: " + timer + "s", 570, 48);
+    text("Time: " + timer + "s", 570, 48);
  for (let platform of platforms){
     platform.draw();
   }
@@ -113,19 +113,23 @@ function gameScreen() {
 
  function winScreen() {
   image(start, width / 2, height / 2, width, height);
+  fill(0,128,0);
+  
   textSize(40);
   textAlign(CENTER);
-  text("WELL DONE!", 330, 300);
-  text("Press the spacebar to restart", 350, 400);
+  text("WELL DONE!", width/2, height/2);
+  textSize(20);
+  text("Press SPACEBAR to restart", width/2, 370);
 }
 
 function loseScreen() {
   image(start, width / 2, height / 2, width, height);
   fill(255,0,0);
-  textSize(40);
+  textSize(60);
   textAlign(CENTER);
-  text("GAME OVER", 450, 300);
-  text("click on the screen to restart", 450, 400);
+  text("GAME OVER", width / 2, height / 2);
+  textSize(20);
+  text("Press SPACEBAR to restart", 450, 370);
 }
 // class for lava
 class Lava {
