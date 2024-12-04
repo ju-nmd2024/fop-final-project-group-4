@@ -17,7 +17,7 @@ let gravity= 0.5;
 let jumpStrength = 15;
 
 // Game state
-let gameState = "start";
+let gameState = "play";
 
 
 function preload() {
@@ -53,15 +53,13 @@ collectibles.push(new Collectible(490,250,wheel,40,40));
 
 
 function startScreen() {
-  push();
   image(start, width / 2, height / 2, width, height);
   fill(255, 255, 190);
   textSize(40);
   textAlign(CENTER);
   text("START GAME", 440, 300);
   text("Click or press enter to play", 440, 450);
-
-  pop();
+  
 }
 
 function gameScreen() {
@@ -80,6 +78,9 @@ function gameScreen() {
     gameState= "win";
   } // lägga in time stamp här??
 
+  drawAlien(); 
+  alienMovement();
+
 
   /*image(elevator, 145, 320, 225, 30);
   image(dunk, 820, 400, 60, 60);
@@ -87,33 +88,29 @@ function gameScreen() {
   image(tool, 280, 100, 70, 40);*/
   
 
-    image(alien, alienX, alienY + 500, 70, 70);
+  //image(alien, alienX, alienY + 500, 70, 70);
     
 }
 
 function winScreen() {
-  push();
   image(start, width / 2, height / 2, width, height);
   textSize(40);
   textAlign(CENTER);
   text("WELL DONE!", 330, 300);
   text("click on the screen to restart", 350, 400);
-  pop();
 }
 
 function loseScreen() {
-  push();
   image(start, width / 2, height / 2, width, height);
   textSize(40);
   textAlign(CENTER);
-  text("GAME OVER", 330, 300);
-  text("click on the screen to restart", 350, 400);
-  pop();
+  text("GAME OVER", 450, 300);
+  text("click on the screen to restart", 450, 400);
 }
 
 function draw() {
   //Handle keyboard input for movement
-  if (keyIsDown(RIGHT_ARROW)) {
+  /*if (keyIsDown(RIGHT_ARROW)) {
     faceDirection = 1;
     alienX += 3;
   }
@@ -152,7 +149,7 @@ function draw() {
     winScreen();
   } else if (gameState === "lose"){
     loseScreen();
-  }
+  } */
 }
 
 function collisions() {
@@ -193,4 +190,34 @@ class Collectible{
       image(this.img,this.x,this.y,this.width,this.height);
     }
   }
+}
+
+function alienMovement(){
+  // side movement 
+  if(keyIsDown(RIGHT_ARROW)){
+    faceDirection = 1;
+    alienX += 3;
+  }
+  if(keyIsDown(LEFT_ARROW)){
+    faceDirection = -1;
+    alienX -= 3;
+  }
+   // jump
+   if(keyIsDown(UP_ARROW)&& onGround){
+    alienVelocity = -jumpStrength;
+    onGround = false;
+   }
+
+   // gravity 
+   alienVelocity += gravity;
+   alienY += alienVelocity;
+   alienX = hinder(alienX, 0, width - 70);
+}
+function drawAlien(){
+  push();
+  translate(alienX, alienY);
+  scale(faceDirection, 1);
+  image(alien,0, 0 ,70, 70);
+  pop();
+  
 }
