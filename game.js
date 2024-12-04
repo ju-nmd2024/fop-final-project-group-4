@@ -17,7 +17,7 @@ let gravity= 0.5;
 let jumpStrength = 15;
 
 // Game state
-let gameState = "play";
+let gameState = "start";
 
 
 function preload() {
@@ -27,8 +27,8 @@ function preload() {
   tool = loadImage("tool.png");
   wheel = loadImage("wheel.png");
   start = loadImage("screen.png");
-  elevator = loadImage("elevator.png");
-  lava = loadImage("lava.png");
+  //elevator = loadImage("elevator.png");
+  //lava = loadImage("lava.png");
 }
 
 function setup() {
@@ -36,15 +36,15 @@ function setup() {
   imageMode(CENTER);
  
  // create platforms 
- platforms.push(new Platform(0, 140, 605, 40));   // Top platform
- platforms.push(new Platform(207, 279, 675, 40)); // middle platform
- platforms.push(new Platform(0, 420, 599, 40));   // bottom platform
- platforms.push(new Platform(760, 456, 125, 40)); // side platform 1
- platforms.push(new Platform(760, 176, 125, 40)); // side platform 2
- platforms.push(new Platform(0, 600, 900, 40));   // ground platform 
- platforms.push(new Platform(0, 0, 30, 640));     // left wall 
- platforms.push(new Platform(870, 9, 50, 640));   // right wall 
- platforms.push(new Platform(0, 0, 900, 20));     // roof 
+ platforms.push(new platform(0, 140, 605, 40));   // Top platform
+ platforms.push(new platform(207, 279, 675, 40)); // middle platform
+ platforms.push(new platform(0, 420, 599, 40));   // bottom platform
+ platforms.push(new platform(760, 456, 125, 40)); // side platform 1
+ platforms.push(new platform(760, 176, 125, 40)); // side platform 2
+ platforms.push(new platform(0, 600, 900, 40));   // ground platform 
+ platforms.push(new platform(0, 0, 30, 640));     // left wall 
+ platforms.push(new platform(870, 9, 50, 640));   // right wall 
+ platforms.push(new platform(0, 0, 900, 20));     // roof 
 // add collectibles
 collectibles.push(new Collectible(820,400,dunk,60,60));
 collectibles.push(new Collectible(280,100,tool,70,40));
@@ -68,28 +68,18 @@ function gameScreen() {
   for (let platform of platforms){
     platform.draw();
   }
-
   // draw collectibles
   for(let item of collectibles) {
     item.draw();
   }
+  drawAlien(); 
+  alienMovement();
+  collisions();
   // check if all the items are collected
   if (collectibles.every(item=> item.collected)){
     gameState= "win";
   } // lägga in time stamp här??
 
-  drawAlien(); 
-  alienMovement();
-
-
-  /*image(elevator, 145, 320, 225, 30);
-  image(dunk, 820, 400, 60, 60);
-  image(wheel, 490, 250, 40, 40);
-  image(tool, 280, 100, 70, 40);*/
-  
-
-  //image(alien, alienX, alienY + 500, 70, 70);
-    
 }
 
 function winScreen() {
@@ -97,7 +87,7 @@ function winScreen() {
   textSize(40);
   textAlign(CENTER);
   text("WELL DONE!", 330, 300);
-  text("click on the screen to restart", 350, 400);
+  text("Press the spacebar to restart", 350, 400);
 }
 
 function loseScreen() {
@@ -108,56 +98,49 @@ function loseScreen() {
   text("click on the screen to restart", 450, 400);
 }
 
-function draw() {
-  //Handle keyboard input for movement
-  /*if (keyIsDown(RIGHT_ARROW)) {
-    faceDirection = 1;
-    alienX += 3;
-  }
-  if (keyIsDown(LEFT_ARROW)) {
-    alienX -= 3;
-    faceDirection = -1;
-  }
-  push();
-  translate(alienX, alienY + 440);
-  scale(faceDirection, 1);
- image(alien, 0, 0, 70, 70); //lägg in denna i gamestate
-  pop();
-  if (keyIsDown(UP_ARROW)) {
-    alienY -= 3; // Move upwards by reducing velocity
-    jump = true;
-    alienVelocity = 5;
-  } else {
-    jump = false;
-  }
-  // Alien velocityY
-  alienY -= alienVelocity;
-
-  if (alienY < 100) {
-    alienVelocity -= 2;
-  }
-
-  if (alienY >= 100) {
-    alienVelocity = 0;
-    alienY = 100;
-  }
-  if (gameState === "Start"){
+function draw() { 
+  if (gameState === "start"){
     startScreen();
-  } else if(gameState === "Play"){
+  } else if(gameState === "play"){
     gameScreen();
   } else if(gameState === "win"){
     winScreen();
   } else if (gameState === "lose"){
     loseScreen();
-  } */
+  } 
 }
 
 function collisions() {
-  soil = false;
+  onGround= false;
+  // collision with platforms
+  for(let platform of platforms){
+    if (
+  alienY + 35 >= platform.y && // bottom hits top of platform
+  alienY + 35 <= platform.y + platform.h && // inside the platform height
+  alienX + 35 > platform.x && // right side within platform
+  alienX - 35 < platform.x + platform.w // left side within platform
+  ) {
+    alienY = platform.y - 35;
+    alienVelocity= 0;
+    onGround= true;
+  }
+  // huvudet slår mot 
+  if (
+    alienY - 35 <= platform.y + platform.h &&
+    alienY - 35 >= platform.y &&
+    alienX + 35 > platform.x &&
+    alienX - 35 < platform.x + platform.w 
+  ){
+    alienY= platform.y + platform.h +35;
+    alienVelocity= 0; // stop upward movement
+  }
+} for (let item of collectibles){
+  item.checkCollision(alienX,alienY);
+}   
 }
 
 // Blue platforms class
-class Platform {
+class platform {
   constructor(x, y, w, h){
       this.x = x;
       this.y = y;
@@ -190,6 +173,18 @@ class Collectible{
       image(this.img,this.x,this.y,this.width,this.height);
     }
   }
+  checkCollision(alienX, alienY) {
+    if (
+      alienX + 35 > this.x - this.width / 2 &&
+      alienX - 35 < this.x + this.width / 2 &&
+      alienY + 35 > this.y - this.height / 2 &&
+      alienY - 35 < this.y + this.height / 2
+    ) {
+      this.collected = true; // Mark as collected
+      return true;
+    }
+    return false;
+  }
 }
 
 function alienMovement(){
@@ -211,7 +206,7 @@ function alienMovement(){
    // gravity 
    alienVelocity += gravity;
    alienY += alienVelocity;
-   alienX = hinder(alienX, 0, width - 70);
+   alienX = constrain(alienX, 0, width - 70);
 }
 function drawAlien(){
   push();
@@ -220,4 +215,21 @@ function drawAlien(){
   image(alien,0, 0 ,70, 70);
   pop();
   
+}
+function keyPressed() {
+  if (gameState === "start" && (key === "Enter" || key === "13")) {
+    gameState = "play";
+  } else if ((gameState === "win" || gameState === "lose") && key === " ") {
+    gameState = "start";
+    resetGame();
+  }
+}
+
+function resetGame() {
+  alienX = 100;
+  alienY = 600;
+  alienVelocity = 0;
+  for (let item of collectibles) {
+    item.collected = false;
+  }
 }
