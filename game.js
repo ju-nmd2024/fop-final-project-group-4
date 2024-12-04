@@ -45,9 +45,10 @@ function setup() {
  platforms.push(new Platform(0, 0, 30, 640));     // left wall 
  platforms.push(new Platform(870, 9, 50, 640));   // right wall 
  platforms.push(new Platform(0, 0, 900, 20));     // roof 
- 
-
-  
+// add collectibles
+collectibles.push(new Collectible(820,400,dunk,60,60));
+collectibles.push(new Collectible(280,100,tool,70,40));
+collectibles.push(new Collectible(490,250,wheel,40,40));
 }
 
 
@@ -69,6 +70,16 @@ function gameScreen() {
   for (let platform of platforms){
     platform.draw();
   }
+
+  // draw collectibles
+  for(let item of collectibles) {
+    item.draw();
+  }
+  // check if all the items are collected
+  if (collectibles.every(item=> item.collected)){
+    gameState= "win";
+  } // lägga in time stamp här??
+
 
   /*image(elevator, 145, 320, 225, 30);
   image(dunk, 820, 400, 60, 60);
@@ -164,5 +175,22 @@ class Platform {
       noStroke();
       rect(this.x, this.y, this.w, this.h);
 
+  }
+}
+
+// class for collectibles
+class Collectible{
+  constructor(x,y,img,width=60,height = 60){
+    this.x=x;
+    this.y= y;
+    this.img=img;
+    this.width= width;
+    this.height= height;
+    this.collected= false; // to know if they are collected
+  }
+  draw(){
+    if(!this.collected){
+      image(this.img,this.x,this.y,this.width,this.height);
+    }
   }
 }
