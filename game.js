@@ -1,20 +1,22 @@
 // variables for images
 let alien, img, dunk, tool, wheel, start;
-
+astroX=90;
+astroY=90;
 // game elements
 let platforms = []; // array for platforms
 let collectibles = []; // array for collectibles
-
+let lavaObjects = [];
 // character
 let faceDirection = 1;
 let alienX = 100;
-let alienY = 600;
+let alienY = 602;
 let alienVelocity = 0;
 let onGround = false;
+let timer = 20;
 
 // Gravity
 let gravity= 0.5;
-let jumpStrength = 15;
+let jumpStrength = 13;
 
 // Game state
 let gameState = "start";
@@ -27,14 +29,16 @@ function preload() {
   tool = loadImage("tool.png");
   wheel = loadImage("wheel.png");
   start = loadImage("screen.png");
-  //elevator = loadImage("elevator.png");
-  //lava = loadImage("lava.png");
+  lava = loadImage("lava.png");
+  astro = loadimage ("astro.png");
 }
 
 function setup() {
-  createCanvas(900, 680);
+  createCanvas(900, 640);
   imageMode(CENTER);
- 
+  
+lavaObjects.push(new Lava(700 , 283, lava, 90, 20));
+lavaObjects.push(new Lava(260, 600, lava, 70, 20));
  // create platforms 
  platforms.push(new platform(0, 140, 605, 40));   // Top platform
  platforms.push(new platform(207, 279, 675, 40)); // middle platform
@@ -64,7 +68,15 @@ function startScreen() {
 
 function gameScreen() {
   image(img, width / 2, height / 2, width, height);
+  image(astro,90,90,60,90);
   // draw platforms
+  if (frameCount % 60 === 0 && timer > 0) {  
+    timer--;  }
+    fill(255);
+    textSize(30);
+    textAlign(RIGHT);
+    text("Time left: " + timer + "s", 570, 48);
+
   for (let platform of platforms){
     platform.draw();
   }
@@ -72,6 +84,10 @@ function gameScreen() {
   for(let item of collectibles) {
     item.draw();
   }
+  for (let lavas of lavaObjects) {
+    lavas.draw();
+
+    }
   drawAlien(); 
   alienMovement();
   collisions();
