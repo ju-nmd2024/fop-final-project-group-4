@@ -30,7 +30,7 @@ function preload() {
   wheel = loadImage("wheel.png");
   start = loadImage("screen.png");
   lava = loadImage("lava.png");
-  astro = loadimage ("astro.png");
+  astro = loadImage ("astro.png");
 }
 
 function setup() {
@@ -87,16 +87,28 @@ function gameScreen() {
   for (let lavas of lavaObjects) {
     lavas.draw();
 
-    }
-  drawAlien(); 
-  alienMovement();
-  collisions();
-  // check if all the items are collected
-  if (collectibles.every(item=> item.collected)){
-    gameState= "win";
-  } // lägga in time stamp här??
+  }
 
-}
+   // Handle alien movement
+   handlePlayerMovement();
+
+   // Draw alien
+   drawAlien();
+ 
+   // Check collisions
+   checkCollisions();
+ 
+   // Check if all collectibles are collected
+   if (collectibles.every(item => item.collected)) {
+     if (alienX <112 && alienY === 95 ) {
+       gameState = "win";
+   } }
+   else if (timer === 0) {
+     gameState ="lose";
+   }
+ }
+
+
 
 function winScreen() {
   image(start, width / 2, height / 2, width, height);
@@ -113,6 +125,23 @@ function loseScreen() {
   text("GAME OVER", 450, 300);
   text("click on the screen to restart", 450, 400);
 }
+
+class Lava {
+  constructor(x, y, img, width , height) { 
+    this.x = x; 
+    this.y = y;
+    this.img = img;
+    this.width = width;
+    this.height = height;
+  }
+  draw() { 
+    image(this.img, this.x, this.y, this.width, this.height);
+    noFill();
+  stroke(255, 0, 0); // red to see the lava pic
+  }
+
+}
+
 
 function draw() { 
   if (gameState === "start"){
