@@ -60,10 +60,12 @@ function setup() {
 function startScreen() {
   image(start, width / 2, height / 2, width, height);
   fill(255, 255, 190);
-  textSize(40);
+  textSize(50);
   textAlign(CENTER);
-  text("START GAME", 440, 300);
-  text("Click or press enter to play", 440, 450);
+  textStyle(BOLD);
+  text("START GAME", width / 2, height / 2);
+  textSize(20);
+  text("Press enter to play", 440, 370);
   
 }
 
@@ -119,6 +121,7 @@ function gameScreen() {
 
 function loseScreen() {
   image(start, width / 2, height / 2, width, height);
+  fill(255,0,0);
   textSize(40);
   textAlign(CENTER);
   text("GAME OVER", 450, 300);
@@ -301,6 +304,7 @@ function resetGame() {
   alienX = 100;
   alienY = 600;
   alienVelocity = 0;
+  timer = 20;
   for (let item of collectibles) {
     item.collected = false;
   }
