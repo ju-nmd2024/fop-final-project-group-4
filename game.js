@@ -14,11 +14,11 @@ let alienVelocity = 0;
 let onGround = false;
 let timer = 20;
 
-// enemy 
+// enemy
 let enemyX = 600;
 let enemyY = 600;
 let enemyHeight = 70;
-
+let lives = 2;
 
 let direction = "forward";
 
@@ -79,21 +79,33 @@ function startScreen() {
   text("START GAME", width / 2, height / 2);
   textSize(20);
   text("Press ENTER to play", width / 2, 370);
+
+  //instructions for gameplay
+  textSize(15);
+  textAlign(LEFT);
+  textStyle(NORMAL);
+  text("Instructions:", 90, 450);
+  text("- Use the ARROW KEYS to move.", 90, 480);
+  text("- Avoid the lava and enemies.", 90, 510);
+  text("- You have 2 lives to use.", 90, 540);
+  text("- Collect all the items and meet Bob to win!", 90, 570);
 }
 
 function gameScreen() {
   image(img, width / 2, height / 2, width, height);
   image(astro, 90, 90, 50, 90);
-  
+
   // draw platforms
   frameRate(30);
   if (frameCount % 60 === 0 && timer > 0) {
+    // learned from "hellogirl" mentor
     timer--;
   }
   fill(255);
-  textSize(30);
+  textSize(20);
   textAlign(RIGHT);
   text("Time: " + timer + "s", 570, 48);
+  text("Lives x " + lives + "", 570, 70);
   for (let platform of platforms) {
     platform.draw();
   }
@@ -104,15 +116,15 @@ function gameScreen() {
   for (let lavas of lavaObjects) {
     lavas.draw();
   }
-  image(enemy, enemyX, enemyY, 50 ,enemyHeight);
-  
+  image(enemy, enemyX, enemyY, 50, enemyHeight);
+
   // Handle alien movement
   handlePlayerMovement();
 
   // Draw alien
   drawAlien();
-  
-  // moving enemy 
+
+  // moving enemy
   enemyMove();
 
   // Check collisions
@@ -223,7 +235,7 @@ function checkCollisions() {
     }
     for (let lava of lavaObjects) {
       if (lava.aliencollision(alienX, alienY)) {
-        gameState = "lose"; // Game over if touching lava
+        loseslife(); // Game over if touching lava
         return;
       }
     }
@@ -232,10 +244,9 @@ function checkCollisions() {
   for (let item of collectibles) {
     item.checkCollision(alienX, alienY);
   }
-  if( alienX + 35 > enemyX  && alienY -35 >= 500 )
-   {
-    gameState ="lose";
-  } 
+  if (alienX + 35 > enemyX && alienY - 35 >= 500) {
+    loseslife();
+  }
 }
 
 // Blue platforms class
@@ -299,12 +310,12 @@ function handlePlayerMovement() {
     alienVelocity = -jumpStrength;
     onGround = false;
   }
-
   // gravity
   alienVelocity += gravity;
   alienY += alienVelocity;
   alienX = constrain(alienX, 70, width - 50 - 25); // got it from P5 website
 }
+
 function drawAlien() {
   push();
   translate(alienX, alienY);
@@ -313,23 +324,21 @@ function drawAlien() {
   pop();
 }
 
-function enemyMove(){
-  //enemy(enemyX,enemyY);
-  if (direction === "forward"){
-   if (enemyX < 860){
-     enemyX = enemyX + 5;
-   } else {
-     direction = "backwards";
-   }
-  } else if (direction === "backwards"){
-   if (enemyX >= 600){
-     enemyX = enemyX - 5;
-   } else {
-     direction = "forward";
-   }
+function enemyMove() {
+  if (direction === "forward") {
+    if (enemyX < 860) {
+      enemyX = enemyX + 5;
+    } else {
+      direction = "backwards";
+    }
+  } else if (direction === "backwards") {
+    if (enemyX >= 600) {
+      enemyX = enemyX - 5;
+    } else {
+      direction = "forward";
+    }
   }
 }
-
 
 function keyPressed() {
   if (gameState === "start" && (key === "Enter" || key === "13")) {
@@ -345,7 +354,23 @@ function resetGame() {
   alienY = 600;
   alienVelocity = 0;
   timer = 20;
+  lives = 2;
   for (let item of collectibles) {
     item.collected = false;
   }
+}
+
+function loseslife() {
+  lives--;
+  if (lives <= 0) {
+    gameState = "lose";
+  } else {
+    resetposition();
+  }
+}
+
+function resetposition() {
+  alienX = 350;
+  alienY = 602;
+  alienVelocity = 0;
 }
