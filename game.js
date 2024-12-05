@@ -1,5 +1,5 @@
 // variables for images
-let alien, img, dunk, tool, wheel, start, hammer;
+let alien, img, dunk, tool, wheel, start, hammer, enemy;
 astroX = 90;
 astroY = 90;
 // game elements
@@ -13,6 +13,14 @@ let alienY = 602;
 let alienVelocity = 0;
 let onGround = false;
 let timer = 20;
+
+// enemy 
+let enemyX = 600;
+let enemyY = 600;
+let enemyHeight = 70;
+
+
+let direction = "forward";
 
 // Gravity
 let gravity = 0.5;
@@ -31,6 +39,7 @@ function preload() {
   lava = loadImage("lava.png");
   astro = loadImage("astro.png");
   hammer = loadImage("hammer.png");
+  enemy = loadImage("enemy.png");
 }
 
 function setup() {
@@ -75,6 +84,7 @@ function startScreen() {
 function gameScreen() {
   image(img, width / 2, height / 2, width, height);
   image(astro, 90, 90, 50, 90);
+  
   // draw platforms
   frameRate(30);
   if (frameCount % 60 === 0 && timer > 0) {
@@ -94,11 +104,16 @@ function gameScreen() {
   for (let lavas of lavaObjects) {
     lavas.draw();
   }
+  image(enemy, enemyX, enemyY, 50 ,enemyHeight);
+  
   // Handle alien movement
   handlePlayerMovement();
 
   // Draw alien
   drawAlien();
+  
+  // moving enemy 
+  enemyMove();
 
   // Check collisions
   checkCollisions();
@@ -217,6 +232,10 @@ function checkCollisions() {
   for (let item of collectibles) {
     item.checkCollision(alienX, alienY);
   }
+  if( alienX + 35 > enemyX  && alienY -35 >= 500 )
+   {
+    gameState ="lose";
+  } 
 }
 
 // Blue platforms class
@@ -293,6 +312,25 @@ function drawAlien() {
   image(alien, 0, 0, 70, 50);
   pop();
 }
+
+function enemyMove(){
+  //enemy(enemyX,enemyY);
+  if (direction === "forward"){
+   if (enemyX < 860){
+     enemyX = enemyX + 5;
+   } else {
+     direction = "backwards";
+   }
+  } else if (direction === "backwards"){
+   if (enemyX >= 600){
+     enemyX = enemyX - 5;
+   } else {
+     direction = "forward";
+   }
+  }
+}
+
+
 function keyPressed() {
   if (gameState === "start" && (key === "Enter" || key === "13")) {
     gameState = "play";
