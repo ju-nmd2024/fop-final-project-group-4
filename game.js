@@ -135,7 +135,8 @@ function gameScreen() {
     if (alienX < 112 && alienY === 95) {
       gameState = "win";
     }
-  } else if (timer === 0) {
+  } 
+  if (timer === 0) {
     gameState = "lose";
   }
 }
@@ -363,7 +364,7 @@ function resetGame() {
 function loseslife() {
   lives--;
   if (lives <= 0) {
-    gameState = "lose";
+    gameState = "lose"; 
   } else {
     resetposition();
   }
